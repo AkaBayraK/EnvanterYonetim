@@ -1,11 +1,11 @@
-package com.response;
+package com.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.entity.UrunEntity;
+import com.entity.DepoEntity;
 
 @Repository
-public interface UrunRepository extends JpaRepository<UrunEntity, Long> {
+public interface DepoRepository extends JpaRepository<DepoEntity, Long> {
 
 }
