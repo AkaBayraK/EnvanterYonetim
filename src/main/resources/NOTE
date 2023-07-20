@@ -1,0 +1,75 @@
+ŞİRKET: KAFEİN
+
+ENVANTER YÖNETİM ÖDEVİ - maddeler halinde ayırdığımızda
+
+- [x] Envanterde bulunacak ürünler için ürün ekleme, çıkarma, silme ve düzenleme işlemlerinin yapılması.(Envanterde) Bu işlemler yapılırken bunların bir history tablosunda kaydının tutulması gerekmektedir.
+
+- [x] Her ürünün id ‘sinin, adının, kategorisinin ve ürün sayısının olması zorunludur. 
+
+- [x] Kategori tablosu olmalıdır ve her ürünün bir kategorisi olması zorunludur. 
+
+- [x] Envanterden çıkartma işlemi yapılabilmelidir. Her bir ürün için bir kritik eşik belirlenmeli ve envanterden çıkartma işlemi yapıldıktan sonra eğer o eşiğin altına düşerse mail atma işlemi yapılmalıdır(mail atmak opsiyoneldir, log da basılabilir.) 
+
+- [x] Depo tablosu olmalıdır. Deponun adı, adresi, bulunduğu bölge(Akdeniz, Ege ..), ve şehir bilgisi tutulmalıdır. (Bölge ve şehir bilgilerinin tablolarda tutulmasına gerek yoktur.)
+
+- [x] Ürünlerin hangi depolarda tutulduğu belirtilmelidir. 
+
+- [x] Ürünler depoya, deponun bölgesine, deponun şehrine veya kategorisine göre filtrelenebilir. 
+
+- [x] Bir ürünün aratılıp hangi depolarda olduğunu gösteren apinin yazılması gerekmektedir.
+
+
+Yukarıda yapılan maddeler kodsal revizeleri yapılıp işaretlenmiştir.
+
+
+Kullanılması gereken teknolojiler:
+
+Spring Boot 3.1.1
+
+Java 17 (mac bilgisayarda jdk1.8 kuruluma olmadı)
+
+MySql (Docker ortamında kurulumu yapılmıştır)
+
+Docker da images olarak 
+MYSQL_VERSION 8.0.33
+Root root
+
+- Terminal yardımıyla images oluşup oluşmadığı kontrol ediliyor
+- docker images
+
+— terminal yardımıyla Container oluşturuluyor
+docker container run --name MySQLEnvanterYonetim --detach --publish 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql
+
+— MySQLEnvanterYonetim adli Container içerisine giriliyor
+docker container exec -it MySQLEnvanterYonetim mysql -u root -p -h 127.0.0.1
+
+— db create ediliyor
+CREATE DATABASE envanterDB;
+
+mysql> show databases;
++--------------------+
+| Database           		|
++--------------------+
+| envanterDB         		|
+| information_schema 	|
+| mysql              		|
+| performance_schema |
+| sys                		|
++--------------------+
+5 rows in set (0.00 sec)
+
+
+—user create ediliyor
+USE envanterDB;
+
+mysql> 1. SELECT version();
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1. SELECT version()' at line 1
+mysql> SELECT version();
++-----------+
+| version() |
++-----------+
+| 8.0.33    |
++-----------+
+1 row in set (0.00 sec)
+
+- DBeaver yardımıylada tablolar oluşturulacak. (Create scripleri proje içerisine yerleştirilmiştir)
