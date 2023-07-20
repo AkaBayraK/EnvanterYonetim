@@ -1,5 +1,6 @@
 package com.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -8,10 +9,67 @@ import org.springframework.stereotype.Service;
 import com.entity.DepoUrunEntity;
 import com.hibernate.HibernateMySQLUtil;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
 
 @Service
 public class DepoUrunServiceImpl implements DepoUrunService {
 	
+	public List<DepoUrunEntity> search(DepoUrunEntity ent) {
+		List<DepoUrunEntity>	result	=	new ArrayList<DepoUrunEntity>();
+		Session	ses	=	null;
+		try {
+			ses = HibernateMySQLUtil.openSession();
+			result  = search(ses, ent);
+		} catch (Exception e) {
+			HibernateMySQLUtil.rollBack(ses);
+			result.get(0).getErrorMessages().add(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			HibernateMySQLUtil.close(ses);
+		}
+        return result;
+	}
+	
+	public List<DepoUrunEntity> search(Session	ses, DepoUrunEntity ent) {
+		List<DepoUrunEntity>	result	=	new ArrayList<DepoUrunEntity>();
+		try {
+	        CriteriaBuilder cb = ses.getCriteriaBuilder();
+	        CriteriaQuery<DepoUrunEntity> cq = cb.createQuery(DepoUrunEntity.class);
+	        Root<DepoUrunEntity> kural = cq.from(DepoUrunEntity.class);
+	        List<Predicate> criteria = new ArrayList<Predicate>();
+	        
+	        // Ürün id sine göre filitreler
+	        if (ent.getUrun()!=null && ent.getUrun().getId()!=null) {
+				criteria.add(cb.equal(kural.get("urun").get("id") , ent.getUrun().getId()));	        	
+	        }
+	        // arama kriterine kategori de eklenmiş ise filitreler
+	        if (ent.getUrun()!=null && ent.getUrun().getKategoriId()!=null) {
+				criteria.add(cb.equal(kural.get("urun").get("kategoriId") , ent.getUrun().getKategoriId()));	        	
+	        }
+	        // arama kriterine depo da eklenmiş ise filitreler
+	        if (ent.getDepo()!=null && ent.getDepo().getId()!=null) {
+				criteria.add(cb.equal(kural.get("depo").get("id") , ent.getDepo().getId()));	        	
+	        }
+	        // arama kriterine deponun bulunduğu bölge görede eklenmiş ise filitreler
+	        if (ent.getDepo()!=null && ent.getDepo().getBolgeAdi()!=null) {
+				criteria.add(cb.like(kural.get("depo").get("bolgeAdi") , ent.getDepo().getBolgeAdi()));	        	
+	        }
+	        // arama kriterine deponun bulunduğu şehire görede eklenmiş ise filitreler
+	        if (ent.getDepo()!=null && ent.getDepo().getIlAdi()!=null) {
+				criteria.add(cb.like(kural.get("depo").get("ilAdi") , ent.getDepo().getIlAdi()));	        	
+	        }
+			cq.select(kural).where(criteria.toArray(new Predicate[]{}));
+	        result = ses.createQuery(cq).getResultList();
+		} catch (Exception e) {
+			result.get(0).getErrorMessages().add(e.getMessage());
+			e.printStackTrace();
+		} finally {}
+        return result;
+	}
 	
 	@Override 
 	public List<DepoUrunEntity> getAll() {
@@ -66,8 +124,8 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 				if (entdb!=null && ent.getId()!=null) {
 					ses.beginTransaction();
 					
-					entdb.setDepoId(ent.getDepoId());
-					entdb.setUrunId(ent.getUrunId());
+					entdb.setDepo(ent.getDepo());
+					entdb.setUrun(ent.getUrun());
 					entdb.setAdet(ent.getAdet());					
 
 					ses.merge(entdb);

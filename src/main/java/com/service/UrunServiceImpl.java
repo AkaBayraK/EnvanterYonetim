@@ -3,8 +3,10 @@ package com.service;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.entity.DepoUrunEntity;
 import com.entity.UrunEntity;
 import com.hibernate.HibernateMySQLUtil;
 
@@ -12,6 +14,29 @@ import com.hibernate.HibernateMySQLUtil;
 @Service
 public class UrunServiceImpl implements UrunService {
 	
+	@Autowired
+    private DepoUrunServiceImpl depoUrunService;
+	
+	public List<DepoUrunEntity> depolar(Long urunId) {
+		Session	ses 		=	null;
+		List<DepoUrunEntity> urunlist	=	null;
+		try {
+				ses = HibernateMySQLUtil.openSession();
+				
+				DepoUrunEntity depoUrunEnt = new DepoUrunEntity();
+				depoUrunEnt.setUrun(new UrunEntity());
+				depoUrunEnt.getUrun().setId(urunId);
+				
+				urunlist = depoUrunService.search(ses, depoUrunEnt);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			HibernateMySQLUtil.close(ses);
+		}
+		
+        return urunlist;
+	}
 	
 	@Override 
 	public List<UrunEntity> getAll() {
@@ -30,7 +55,6 @@ public class UrunServiceImpl implements UrunService {
 		
         return urunlist;
 	}
-
 	
 	@Override 
 	public UrunEntity save(UrunEntity ent) {	

@@ -5,9 +5,12 @@ import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -26,11 +29,13 @@ public class DepoUrunEntity  extends BaseEntity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 	
-    @Column(name = "DEPO_ID", nullable = false)
-    private String depoId;
+	@ManyToOne(targetEntity=DepoEntity.class,fetch=FetchType.EAGER)
+	@JoinColumn(name="DEPO_ID",referencedColumnName="ID", nullable = false)
+	private DepoEntity depo;
     
-    @Column(name = "URUN_ID", nullable = false)
-    private Long urunId;
+	@ManyToOne(targetEntity=UrunEntity.class,fetch=FetchType.EAGER)
+	@JoinColumn(name="URUN_ID",referencedColumnName="ID", nullable = false)
+	private UrunEntity urun;
  
     @Column(name = "ADET", nullable = false)
     private BigDecimal adet;
@@ -42,38 +47,34 @@ public class DepoUrunEntity  extends BaseEntity {
 	
     public DepoUrunEntity() {
 	}
-    
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		DepoUrunEntity other = (DepoUrunEntity) obj;
-		return Objects.equals(adet, other.adet) && Objects.equals(depoId, other.depoId) && Objects.equals(id, other.id)
-				&& Objects.equals(urunId, other.urunId);
+		return Objects.equals(adet, other.adet) && Objects.equals(depo, other.depo) && Objects.equals(id, other.id)
+				&& Objects.equals(urun, other.urun);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(adet, depoId, id, urunId);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(adet, depo, id, urun);
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "UrunDepoEntity [id=" + id + ", urunId=" + urunId + ", depoId=" + depoId + ", adet=" + adet + "]";
+		return "DepoUrunEntity [id=" + id + ", depo=" + depo + ", urun=" + urun + ", adet=" + adet + "]";
 	}
+    
+
 
 
 }

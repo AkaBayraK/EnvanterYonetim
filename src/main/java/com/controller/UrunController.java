@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.entity.DepoUrunEntity;
 import com.entity.UrunEntity;
 import com.service.UrunServiceImpl;
 
@@ -25,6 +26,17 @@ public class UrunController {
 
 	@Autowired
     private UrunServiceImpl UrunServiceImpl;
+	
+	/**
+	 * Bir ürünün aratılıp hangi depolarda olduğunu gösteren apinin yazılması gerekmektedir.
+	 * @param urunId
+	 * @return
+	 */
+	@GetMapping("/depolar/{urunId}")
+    public List<DepoUrunEntity> depolar(@PathVariable long urunId) {
+		System.out.println("search Controller.......");
+        return UrunServiceImpl.depolar(urunId);
+    }
 	
 	@GetMapping("/all")
     public List<UrunEntity> getAll() {

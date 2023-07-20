@@ -22,6 +22,17 @@ public class DepoUrunController {
 
 	@Autowired
     private DepoUrunServiceImpl service;
+
+	/**
+	 * Ürünler depoya, deponun bölgesine, deponun şehrine veya kategorisine göre filtrelenebilir. 
+	 * @param ent
+	 * @return
+	 */
+	@GetMapping("/search")
+    public List<DepoUrunEntity> search(@RequestBody DepoUrunEntity ent) {
+		System.out.println("search Controller.......");
+        return service.search(ent);
+    }
 	
 	@GetMapping("/all")
     public List<DepoUrunEntity> getAll() {
