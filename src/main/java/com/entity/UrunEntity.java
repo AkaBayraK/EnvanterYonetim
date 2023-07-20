@@ -11,6 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+/**
+ * Her ürünün id ‘sinin, adının, kategorisinin ve ürün sayısının olması zorunludur. 
+ */
 @Data
 @Entity
 @Table(name = "URUN_TBL", schema = "envanterDB" )
@@ -31,6 +34,12 @@ public class UrunEntity  extends BaseEntity {
     
     @Column(name = "ADET", nullable = false)
     private BigDecimal adet;
+    
+    /**
+     * Ürün çıkarma işlemi olduğunda ürünün min adet sayısını belirler ve warning olarak bildirilmesini sağlar
+     */
+    @Column(name = "MIN_ADET", nullable = false)
+    private BigDecimal minAdet;
  
 	@SuppressWarnings("unchecked")
 	public Class<?> getEntityClass() {

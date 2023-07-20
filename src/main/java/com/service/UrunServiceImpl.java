@@ -69,7 +69,7 @@ public class UrunServiceImpl implements UrunService {
 					urundb.setAdi(urun.getAdi());
 					urundb.setKategoriId(urun.getKategoriId());
 					urundb.setAdet(urun.getAdet());
-
+					urundb.setMinAdet(urun.getAdet());
 
 					ses.merge(urundb);
 					ses.evict(urundb);
@@ -79,7 +79,7 @@ public class UrunServiceImpl implements UrunService {
 					urundb.getErrorMessages().add("DB den güncellenecek data bulunamadı");
 				}
 			} else {
-				urun.getErrorMessages().add("gelen ürün bilgisi hatalı....");
+				urundb.getErrorMessages().add("gelen ürün bilgisi hatalı....");
 			}
 
 		} catch (Exception e) {
@@ -124,7 +124,7 @@ public class UrunServiceImpl implements UrunService {
 					ses.flush();
 					ses.getTransaction().commit();
 				} else {
-					urun.getErrorMessages().add("DB den silinecek data bulunamadı");
+					urun.getErrorMessages().add("DB den silinecek data bulunamadı.");
 				}
 		} catch (Exception e) {
 			urun.getErrorMessages().add(e.getMessage());

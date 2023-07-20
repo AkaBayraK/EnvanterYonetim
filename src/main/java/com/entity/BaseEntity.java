@@ -2,15 +2,59 @@ package com.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
+import lombok.Data;
 
+@Data
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable, Cloneable{
 
     private static final long serialVersionUID = 7214433176459979236L;
+    
+    // datanın durumu
+    @Transient
+    public static final String YES = "E";
+    @Transient
+    public static final String NO = "H";
+    
+    // datanın işlem türü
+    @Transient
+    public static final String CREATE = "CREATE";
+    @Transient
+    public static final String UPDATE = "UPDATE";
+    
+    // data işlem kullanıcı zaman bilgileri  aslında bu alanlar zorunlu olması gerekiyor ama test
+    @Column(name="GMT")
+    private Date gmt;
+
+    @Column(name="CREATE_GMT")
+    private Date createGmt;
+
+    @Version
+    @Column(name="VERSION")
+    private Integer version = 1;
+
+    @Column(name="USR_ID")
+    private Long usrId;
+
+    @Column(name="CREATE_USR_ID")
+    private Long createUsrId;
+
+    @Column(name="STATUS")
+    @ColumnDefault("H")
+    private String status;
+
+    @Column(name=" COMMENT_", length = 512)
+    private String comment;
+    
     
     @Transient
     private List<String> errorMessages = new ArrayList<>();

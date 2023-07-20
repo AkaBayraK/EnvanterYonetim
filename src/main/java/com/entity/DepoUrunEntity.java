@@ -11,7 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-/*ENTİTY lazım olamayabilir*/
+/**
+ * Ürünlerin hangi depolarda tutulduğu belirtilmelidir. 
+ */
 @Data
 @Entity
 @Table(name = "DEPO_URUN_TBL", schema = "envanterDB" )
@@ -19,7 +21,6 @@ public class DepoUrunEntity  extends BaseEntity {
 	
 	private static final long serialVersionUID = -4151019205584999748L;
 
-	/*her depoda her ürün için adet farklı olabilir*/
 	@Id
 	@Column(name = "ID", nullable = false, columnDefinition = "NUMERIC(16,0)")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

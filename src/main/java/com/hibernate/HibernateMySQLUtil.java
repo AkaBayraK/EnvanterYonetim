@@ -1,8 +1,10 @@
 package com.hibernate;
 
 import java.io.BufferedReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
+import org.hibernate.query.Query;
 import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -23,7 +26,14 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.entity.BaseEntity;
+import com.entity.EnvanterEntity;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 
 public class HibernateMySQLUtil {
@@ -33,17 +43,54 @@ public class HibernateMySQLUtil {
 		Session	ses	=	null;
 		try {
 			ses	=	HibernateMySQLUtil.openSession();
+//			
+//			
+//			ses.beginTransaction();
+			
+			List<EnvanterEntity>	result = null;			
+			BigDecimal tplKalanUrunAdeti = BigDecimal.ZERO;
+//			List<EnvanterEntity>	result = HibernateMySQLUtil.loadEntityListByNamedQuery(EnvanterEntity.class, EnvanterEntity.FIND_ENVANTER_URUN_ALL,new Long[] {1L});		
+			
+		
+	        CriteriaBuilder cb = ses.getCriteriaBuilder();
+	        CriteriaQuery<EnvanterEntity> cq = cb.createQuery(EnvanterEntity.class);
+	        Root<EnvanterEntity> kural = cq.from(EnvanterEntity.class);
+	        List<Predicate> criteria = new ArrayList<Predicate>();
+			criteria.add(cb.equal(kural.get("urunId"), 1L));
+	        cq.select(kural).where(criteria.toArray(new Predicate[]{}));
+	        result = ses.createQuery(cq).getResultList();
+	        ses.close();
+	        
+			BigDecimal	girenUrunAdedi = BigDecimal.ZERO;
+			BigDecimal	cikanUrunAdedi = BigDecimal.ZERO;
+			try {
+				girenUrunAdedi = result.stream().filter(x->x.getGirisTrh()!=null).map(EnvanterEntity::getAdet).reduce((a,b)->a.add(b)).get();
+			} catch (Exception e) {
+				girenUrunAdedi = BigDecimal.ZERO;
+			}
+			try {
+				cikanUrunAdedi = result.stream().filter(x->x.getCikisTrh()!=null).map(EnvanterEntity::getAdet).reduce((a,b)->a.add(b)).get();
+			} catch (Exception e) {
+				cikanUrunAdedi = BigDecimal.ZERO;
+			}
+			tplKalanUrunAdeti = (girenUrunAdedi==null?BigDecimal.ZERO:girenUrunAdedi).add(cikanUrunAdedi==null?BigDecimal.ZERO:cikanUrunAdedi);
 			
 			
-			ses.beginTransaction();
+			//Urun ı sine göre envanterdeki tüm listesi çek ve girş tarihi ürünün giren adet sayisi , cikis tarihi olanlar ise ürünün cikan adet sayisi , aradaki farkta kalanı versin.
+			//java 8 deki sortu kullan
+			System.out.println(" Üründe kalan toplam adet sayısı : "+tplKalanUrunAdeti);
+			if (tplKalanUrunAdeti.compareTo(new BigDecimal(10))==-1) {
+				System.out.println(" Üründe kalan toplam adet sayısı : "+tplKalanUrunAdeti);
+			}
+			
 			
 //			ses.merge();
 //			ses.evict();
 			
-			ses.getTransaction().commit();
+//			ses.getTransaction().commit();
 			
 		} catch (Throwable e) {
-			ses.getTransaction().rollback();
+//			ses.getTransaction().rollback();
 			HibernateMySQLUtil.rollBack(ses);
 			e.printStackTrace();
 		}finally {
@@ -159,6 +206,32 @@ public class HibernateMySQLUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void setParameters(Query q, Object[] params ) {
+		int index=0;
+		if(params!=null){
+			for (Object value : params) {
+				q.setParameter(index++, value);
+			}
+		}
+	}
+	
+	public static <T extends BaseEntity> List<T> loadEntityListByNamedQuery (Class<T> entityType,String namedQuery,Object[] params) throws Exception {
+		Session session = null;
+		List<T> result;
+		try {
+			session = HibernateMySQLUtil.getSessionFactory().openSession();
+			org.hibernate.query.Query<T> q = session.getNamedQuery(namedQuery);
+			setParameters(q, params);
+			result= q.getResultList();
+			session.clear();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			close(session);
+		}
+      return result;
 	}
 	
 }

@@ -10,6 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+/**
+ * Depo tablosu olmalıdır. Deponun adı, adresi, bulunduğu bölge(Akdeniz, Ege ..), ve şehir bilgisi tutulmalıdır. (Bölge ve şehir bilgilerinin tablolarda tutulmasına gerek yoktur.)
+ */
 @Data
 @Entity
 @Table(name = "DEPO_TBL", schema = "envanterDB" )

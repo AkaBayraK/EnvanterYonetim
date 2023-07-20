@@ -12,11 +12,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+/**
+ * (Envanterde) Bu işlemler yapılırken bunların bir history tablosunda kaydının tutulması gerekmektedir. 
+ */
 @Data
 @Entity
 @Table(name = "ENVANTER_HSTRY_TBL", schema = "envanterDB" )
-public class EnvanterHstryEntity  {
+public class EnvanterHstryEntity extends BaseEntity {
 	
+	private static final long serialVersionUID = -1143298752717035987L;
+
 	@Id
 	@Column(name = "ID", nullable = false, columnDefinition = "NUMERIC(16,0)")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

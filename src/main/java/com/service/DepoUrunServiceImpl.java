@@ -35,26 +35,23 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 	@Override 
 	public DepoUrunEntity save(DepoUrunEntity ent) {	
 		Session	ses 	=	null;
-		DepoUrunEntity entdb = new DepoUrunEntity();
 		try {
 			ses = HibernateMySQLUtil.openSession();
-	
-			entdb.setDepoId(ent.getDepoId());
-			entdb.setUrunId(ent.getUrunId());			
-			
+			// validate konulabilir
 			ses.beginTransaction();			
 
-			ses.persist(entdb);
-			ses.evict(entdb);
+			ses.persist(ent);
+			ses.evict(ent);
 			
 			ses.getTransaction().commit();
 		} catch (Exception e) {
+			ent.getErrorMessages().add(e.getMessage());
 			ses.getTransaction().rollback();
 			e.printStackTrace();
 		} finally{
 			HibernateMySQLUtil.close(ses);
 		}
-		return entdb;
+		return ent;
 	}
 	
 	@Override 
@@ -70,7 +67,8 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 					ses.beginTransaction();
 					
 					entdb.setDepoId(ent.getDepoId());
-					entdb.setUrunId(ent.getUrunId());			
+					entdb.setUrunId(ent.getUrunId());
+					entdb.setAdet(ent.getAdet());					
 
 					ses.merge(entdb);
 					ses.evict(entdb);
@@ -80,10 +78,11 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 					// hata verecek
 				}
 			} else {
-				// hata ver
+				entdb.getErrorMessages().add("DB de güncellenecek data bulunamadı.");
 			}
 
 		} catch (Exception e) {
+			entdb.getErrorMessages().add(e.getMessage());
 			ses.getTransaction().rollback();
 			e.printStackTrace();
 		} finally{
@@ -123,7 +122,7 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 					ses.flush();
 					ses.getTransaction().commit();
 				} else {
-					
+					ent.getErrorMessages().add("DB den silinecek data bulunamadı.");
 				}
 		} catch (Exception e) {
 			HibernateMySQLUtil.rollBack(ses);

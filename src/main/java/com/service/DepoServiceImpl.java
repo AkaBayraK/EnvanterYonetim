@@ -67,6 +67,8 @@ public class DepoServiceImpl implements DepoService {
 					ses.beginTransaction();
 					
 					entdb.setAdi(ent.getAdi());
+					entdb.setBolgeAdi(ent.getBolgeAdi());
+					entdb.setIlAdi(ent.getIlAdi());
 
 					ses.merge(entdb);
 					ses.evict(entdb);
@@ -76,7 +78,7 @@ public class DepoServiceImpl implements DepoService {
 					// hata verecek
 				}
 			} else {
-				// hata ver
+				entdb.getErrorMessages().add("DB de güncellenecek data bulunamadı.");
 			}
 
 		} catch (Exception e) {
@@ -121,7 +123,7 @@ public class DepoServiceImpl implements DepoService {
 					ses.flush();
 					ses.getTransaction().commit();
 				} else {
-					
+					ent.getErrorMessages().add("DB den silinecek data bulunamadı.");
 				}
 		} catch (Exception e) {
 			ent.getErrorMessages().add(e.getMessage());

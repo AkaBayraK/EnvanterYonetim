@@ -10,6 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+/**
+ * Kategori tablosu olmalıdır ve her ürünün bir kategorisi olması zorunludur. 
+ */
 @Data
 @Entity
 @Table(name = "KATEGORI_TBL", schema = "envanterDB" )
