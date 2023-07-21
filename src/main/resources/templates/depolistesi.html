@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Ürün</title>
+<link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+</head>
+<body>
+<div class="container my-2" align="center">
+ 
+<h3>Depo Listesi</h3>
+<a th:href="@{/api/depo/showFormForSave}" class="btn btn-primary btn-sm mb-3" >Depo Ekle</a>
+    <table style="width:99%" border="1" class = "table table-striped table-responsive-md">
+    <thead>
+  <tr>
+    <th>Id</th>
+    <th>Depo Adı</th>
+    <th>Adresi</th>
+    <th>Bölgesi</th>
+    <th>Şehri</th>
+    <th>Operasyon</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="e:${depolist}">
+        <td th:text="${e.id}"></td>
+        <td th:text="${e.adi}"></td>
+        <td th:text="${e.adres}"></td>
+        <td th:text="${e.bolgeAdi}"></td>
+        <td th:text="${e.ilAdi}"></td>
+        <td>
+			<a th:href="@{/api/depo/showFormForUpdate/{id}(id=${e.id})}" class="btn btn-primary">Güncelle</a>
+            <a th:href="@{/api/depo/showFormForDelete/{id}(id=${e.id})}" class="btn btn-danger">Sil</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</body>
+</html>

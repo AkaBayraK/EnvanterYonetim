@@ -31,6 +31,58 @@ public class EnvanterServiceImpl implements EnvanterService {
 	@Autowired
     private UrunServiceImpl UrunServiceImpl;
 	
+	public List<EnvanterEntity> search(EnvanterEntity ent) {
+		List<EnvanterEntity>	result	=	new ArrayList<EnvanterEntity>();
+		Session	ses	=	null;
+		try {
+			ses = HibernateMySQLUtil.openSession();
+			result  = search(ses, ent);
+		} catch (Exception e) {
+			HibernateMySQLUtil.rollBack(ses);
+			result.get(0).getErrorMessages().add(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			HibernateMySQLUtil.close(ses);
+		}
+        return result;
+	}
+	
+	public List<EnvanterEntity> search(Session	ses, EnvanterEntity ent) {
+		List<EnvanterEntity>	result	=	new ArrayList<EnvanterEntity>();
+		try {
+	        CriteriaBuilder cb = ses.getCriteriaBuilder();
+	        CriteriaQuery<EnvanterEntity> cq = cb.createQuery(EnvanterEntity.class);
+	        Root<EnvanterEntity> kural = cq.from(EnvanterEntity.class);
+	        List<Predicate> criteria = new ArrayList<Predicate>();
+	        
+	        // Ürün id sine göre filitreler
+	        if (ent.getUrun()!=null && ent.getUrun().getId()!=null && ent.getUrun().getId()!=0L) {
+				criteria.add(cb.equal(kural.get("urun").get("id") , ent.getUrun().getId()));	        	
+	        }
+	        // arama kriterine kategori de eklenmiş ise filitreler
+	        if (ent.getUrun()!=null && ent.getUrun().getKategori()!=null && ent.getUrun().getKategori().getId()!=null && ent.getUrun().getKategori().getId()!=0L) {
+	        	criteria.add(cb.equal(kural.get("urun").get("kategori").get("id") , ent.getUrun().getKategori().getId()));	        	
+	        }
+	        // arama kriterine depo da eklenmiş ise filitreler
+	        if (ent.getDepo()!=null && ent.getDepo().getId()!=null && ent.getDepo().getId()!=0L) {
+				criteria.add(cb.equal(kural.get("depo").get("id") , ent.getDepo().getId()));	        	
+	        }
+	        // arama kriterine deponun bulunduğu bölge görede eklenmiş ise filitreler
+	        if (ent.getDepo()!=null && ent.getDepo().getBolgeAdi()!=null && !"".equalsIgnoreCase(ent.getDepo().getBolgeAdi()) ) {
+				criteria.add(cb.like(kural.get("depo").get("bolgeAdi") , ent.getDepo().getBolgeAdi()));	        	
+	        }
+	        // arama kriterine deponun bulunduğu şehire görede eklenmiş ise filitreler
+	        if (ent.getDepo()!=null && ent.getDepo().getIlAdi()!=null && !"".equalsIgnoreCase(ent.getDepo().getIlAdi()) ) {
+				criteria.add(cb.like(kural.get("depo").get("ilAdi") , ent.getDepo().getIlAdi()));	        	
+	        }
+			cq.select(kural).where(criteria.toArray(new Predicate[]{}));
+	        result = ses.createQuery(cq).getResultList();
+		} catch (Exception e) {
+			result.get(0).getErrorMessages().add(e.getMessage());
+			e.printStackTrace();
+		} finally {}
+        return result;
+	}
 	@Override 
 	public List<EnvanterEntity> getAll() {
 		Session	ses 		=	null;
@@ -38,7 +90,7 @@ public class EnvanterServiceImpl implements EnvanterService {
 		try {
 				ses = HibernateMySQLUtil.openSession();
 				
-				entlist =  ses.find(null, entlist);
+				entlist = HibernateMySQLUtil.loadAllData(EnvanterEntity.class, ses);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -104,14 +156,14 @@ public class EnvanterServiceImpl implements EnvanterService {
 				entdb =  (EnvanterEntity)ses.get(EnvanterEntity.class, ent.getId());
 				// eğer db de var ise update etsin yok ise etmesin hata versin.
 				if (entdb!=null && ent.getId()!=null) {
-					
-					String girisDate = f.format(ent.getGirisTrh()).toString();
+					/*
+					String girisDate = ent.getGirisTrh()==null?"":f.format(ent.getGirisTrh()).toString();
 					System.out.println("Current Date = "+girisDate);
 					
 					f = new SimpleDateFormat("yyyy-MM-dd");
 					String cikisDate = f.format(ent.getGirisTrh());
 					System.out.println("Current Date = "+cikisDate);
-					
+					*/
 					if ((ent.getGirisTrh()==null && entdb.getGirisTrh()!=null) 
 							|| (ent.getGirisTrh()!=null && entdb.getGirisTrh()!=null && !f.format(ent.getGirisTrh()).toString().equals(f.format(entdb.getGirisTrh()).toString()))
 							) {
@@ -126,8 +178,8 @@ public class EnvanterServiceImpl implements EnvanterService {
 					}					
 					ses.beginTransaction();
 					
-					entdb.setUrunId(ent.getUrunId());
-					entdb.setDepoId(ent.getDepoId());
+					entdb.setUrun(ent.getUrun());
+					entdb.setDepo(ent.getDepo());
 					entdb.setGirisTrh(ent.getGirisTrh());
 					entdb.setCikisTrh(ent.getCikisTrh());
 					entdb.setAdet(ent.getAdet());
@@ -194,7 +246,7 @@ public class EnvanterServiceImpl implements EnvanterService {
 			// ürün eksiltmesinde adet kontrolü eklenecek, ürün sayısı 10 adetin aşağısına düşer ise uyarı mesajı verecek. WARNING
 			
 			BigDecimal tplKalanUrunAdeti = BigDecimal.ZERO;
-			List<EnvanterEntity>	result	=	 getUrunById(ent.getUrunId());			
+			List<EnvanterEntity>	result	=	 getUrunById(ent.getUrun().getId());			
 			BigDecimal	girenUrunAdedi = BigDecimal.ZERO;
 			BigDecimal	cikanUrunAdedi = BigDecimal.ZERO;
 			try {
@@ -213,12 +265,13 @@ public class EnvanterServiceImpl implements EnvanterService {
 			//Urun ı sine göre envanterdeki tüm listesi çek ve girş tarihi ürünün giren adet sayisi , cikis tarihi olanlar ise ürünün cikan adet sayisi , aradaki farkta kalanı versin.
 			//java 8 deki sortu kullan
 			try {
-				UrunEntity urun = UrunServiceImpl.getById(ent.getUrunId());				
+				UrunEntity urun = UrunServiceImpl.getById(ent.getUrun().getId());				
 				if (tplKalanUrunAdeti.compareTo(urun.getMinAdet())==-1) {
 					ent.getWarningMessages().add(" Üründe kalan toplam adet sayısı : "+tplKalanUrunAdeti);
+					System.out.println(" Üründe kalan toplam adet sayısı : "+tplKalanUrunAdeti);
 				}				
 			} catch (Exception e) {
-				ent.getErrorMessages().add(" Ürüne ait min Adet sayı bilgisi belirlenemedi. URUN_ID : "+ent.getUrunId()+ " EXCEPTION : "+ e.getMessage());
+				ent.getErrorMessages().add(" Ürüne ait min Adet sayı bilgisi belirlenemedi. URUN_ID : "+ent.getUrun().getId()+ " EXCEPTION : "+ e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -260,7 +313,7 @@ public class EnvanterServiceImpl implements EnvanterService {
 	        CriteriaQuery<EnvanterEntity> cq = cb.createQuery(EnvanterEntity.class);
 	        Root<EnvanterEntity> kural = cq.from(EnvanterEntity.class);
 	        List<Predicate> criteria = new ArrayList<Predicate>();
-			criteria.add(cb.equal(kural.get("urunId"), id));
+			criteria.add(cb.equal(kural.get("urun").get("id"), id));
 	        cq.select(kural).where(criteria.toArray(new Predicate[]{}));
 	        result = ses.createQuery(cq).getResultList();
 		} catch (Exception e) {

@@ -15,7 +15,6 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
-import org.hibernate.query.Query;
 import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -26,7 +25,6 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.entity.BaseEntity;
 import com.entity.EnvanterEntity;
 
 import jakarta.persistence.Entity;
@@ -208,30 +206,13 @@ public class HibernateMySQLUtil {
 		}
 	}
 	
-	public static void setParameters(Query q, Object[] params ) {
-		int index=0;
-		if(params!=null){
-			for (Object value : params) {
-				q.setParameter(index++, value);
-			}
-		}
-	}
+	public static <T> List<T> loadAllData(Class<T> type, Session session) {
+	    CriteriaBuilder builder = session.getCriteriaBuilder();
+	    CriteriaQuery<T> criteria = builder.createQuery(type);
+	    criteria.from(type);
+	    List<T> data = session.createQuery(criteria).getResultList();
+	    return data;
+	  }
 	
-	public static <T extends BaseEntity> List<T> loadEntityListByNamedQuery (Class<T> entityType,String namedQuery,Object[] params) throws Exception {
-		Session session = null;
-		List<T> result;
-		try {
-			session = HibernateMySQLUtil.getSessionFactory().openSession();
-			org.hibernate.query.Query<T> q = session.getNamedQuery(namedQuery);
-			setParameters(q, params);
-			result= q.getResultList();
-			session.clear();
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			close(session);
-		}
-      return result;
-	}
 	
 }

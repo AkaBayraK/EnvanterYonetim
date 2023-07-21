@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Ürün Ekle</title>
+<link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+</head>
+<body>
+    <div class="container" style="width:888px" align="center">
+        <h1>Ürün Kayıt Giriş</h1>
+ 
+        <form action="#" th:action="@{/api/urun/saveUrun}" th:object="${urun}" method="post">
+		    <table style="width:99%" border="0" class = "table table-striped table-responsive-md">
+		    <thead>
+			  <tr>
+			    <th> <label>Adı:</label> </th>
+			    <th>
+		            <input type="text" th:field="*{adi}" placeholder="Adı : " class="form-control mb-4 col-4"> 
+            	</th>
+			  </tr>
+			  <tr>
+			    <th> <label>Kategori:</label> </th>
+			    <th>
+					<select th:field="*{kategori.id}" placeholder="kategori : " >
+		                <option th:each="k : ${listkategori}" th:value="${k.id}" th:text="${k.adi}"></option>
+		            </select>
+            	</th>
+			  </tr>
+			  <tr>
+			    <th> <label>Adet:</label> </th>
+			    <th>
+		            <input type="text" th:field="*{adet}" placeholder="Adet : " class="form-control mb-4 col-4"> 
+            	</th>
+			  </tr>
+		  </thead>
+		</table>
+            
+            <button type="submit" class="btn btn-info col-2">Kaydet</button>
+        </form>
+ 
+        <hr>
+        
+        <a th:href="@{/api/urun/urunlistesi}"> Ürün Listesi </a>
+    </div>
+</body>
+</html>

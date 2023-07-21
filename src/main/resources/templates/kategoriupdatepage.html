@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Kategori Güncelle</title>
+ 
+<link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Kategori Güncelle</h1>
+ 
+        <form action="#" th:action="@{/api/kategori/updateKategori}" th:object="${kategori}" method="post">
+             
+            <!-- Add hidden form field to handle update -->
+            <input type="hidden" th:field="*{id}" />
+             
+            <input type="text" th:field="*{adi}" class="form-control mb-4 col-4">
+                                 
+                 
+                <button type="submit" class="btn btn-info col-2"> Güncelle</button>
+        </form>
+         
+        <hr>
+         
+        <a th:href="@{/api/kategori/kategorilistesi}"> Kategori Listesi </a>
+    </div>
+</body>
+</html>

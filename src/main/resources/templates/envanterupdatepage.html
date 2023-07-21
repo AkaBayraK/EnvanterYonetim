@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Envanter Ekle</title>
+<link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+</head>
+<body>
+    <div class="container" style="width:888px" align="center">
+        <h1>Envanter Kayıt Güncelle</h1>
+ 
+        <form action="#" th:action="@{/api/envanter/updateEnvanter}" th:object="${envanter}" method="post">
+		    <table style="width:99%" border="0" class = "table table-striped table-responsive-md">
+		    <thead>
+			  <tr>
+			    <th> <label>Id:</label> </th>
+			    <th>
+					<input type="text" readonly="true" th:field="*{id}" placeholder="ıd : " class="form-control mb-4 col-4">
+            	</th>
+			  </tr>				
+			  <tr>
+			    <th> <label>Ürün:</label> </th>
+			    <th>
+					<select th:field="*{urun.id}" placeholder="Ürün : " readonly="true" >
+                		<option th:each="u : ${listurun}" th:value="${u.id}" th:text="${u.adi}"></option>
+            		</select> 
+            	</th>
+			  </tr>
+			  <tr>
+			    <th> <label>Depo:</label> </th>
+			    <th>
+					<select th:field="*{depo.id}" placeholder="Depo : " readonly="true" >
+		                <option th:each="d : ${listdepo}" th:value="${d.id}" th:text="${d.adi}"></option>
+		            </select>
+            	</th>
+			  </tr>
+			  <tr>
+			    <th> <label>Giriş Tarihi:</label> </th>
+			    <th>
+					<input type="date" readonly="true" th:field="*{girisTrh}" placeholder="Giriş Tarihi : " class="form-control mb-4 col-4">
+            	</th>
+			  </tr>
+			  <tr>
+			    <th> <label>Çıkış Tarihi:</label> </th>
+			    <th>
+					<input type="date" readonly="true" th:field="*{cikisTrh}" placeholder="Çıkış Tarihi : " class="form-control mb-4 col-4">
+            	</th>
+			  </tr>
+			  <tr>
+			    <th> <label>Adet:</label> </th>
+			    <th>
+		            <input type="text" th:field="*{adet}" placeholder="Adet : " class="form-control mb-4 col-4"> 
+            	</th>
+			  </tr>
+		  </thead>
+		</table>
+            
+            <button type="submit" class="btn btn-info col-2">Güncelle</button>
+        </form>
+ 
+        <hr>
+        
+        <a th:href="@{/api/envanter/envanterlistesi}"> Envanter Listesi </a>
+    </div>
+</body>
+</html>

@@ -5,9 +5,12 @@ import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -29,8 +32,9 @@ public class UrunEntity  extends BaseEntity {
     @Column(name = "ADI", nullable = false)
     private String adi;
     
-    @Column(name = "KATEGORI_ID", nullable = false)
-    private BigDecimal kategoriId;
+	@ManyToOne(targetEntity=KategoriEntity.class,fetch=FetchType.EAGER)
+	@JoinColumn(name="KATEGORI_ID",referencedColumnName="ID", nullable = false)
+	private KategoriEntity kategori;
     
     @Column(name = "ADET", nullable = false)
     private BigDecimal adet;
@@ -47,6 +51,7 @@ public class UrunEntity  extends BaseEntity {
 	}
 	
     public UrunEntity() {
+    	this.setKategori(new KategoriEntity());
 	}
     
 	
@@ -62,23 +67,27 @@ public class UrunEntity  extends BaseEntity {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		UrunEntity other = (UrunEntity) obj;
 		return Objects.equals(adet, other.adet) && Objects.equals(adi, other.adi) && Objects.equals(id, other.id)
-				&& Objects.equals(kategoriId, other.kategoriId);
+				&& Objects.equals(kategori, other.kategori) && Objects.equals(minAdet, other.minAdet);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(adet, adi, id, kategoriId);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(adet, adi, id, kategori, minAdet);
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "UrunEntity [id=" + id + ", adi=" + adi + ", kategoriId=" + kategoriId + ", adet=" + adet + "]";
+		return "UrunEntity [id=" + id + ", adi=" + adi + ", kategori=" + kategori + ", adet=" + adet + ", minAdet="
+				+ minAdet + "]";
 	}
 
 }

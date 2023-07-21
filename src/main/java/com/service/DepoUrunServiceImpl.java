@@ -43,23 +43,23 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 	        List<Predicate> criteria = new ArrayList<Predicate>();
 	        
 	        // Ürün id sine göre filitreler
-	        if (ent.getUrun()!=null && ent.getUrun().getId()!=null) {
+	        if (ent.getUrun()!=null && ent.getUrun().getId()!=null && ent.getUrun().getId()!=0L) {
 				criteria.add(cb.equal(kural.get("urun").get("id") , ent.getUrun().getId()));	        	
 	        }
 	        // arama kriterine kategori de eklenmiş ise filitreler
-	        if (ent.getUrun()!=null && ent.getUrun().getKategoriId()!=null) {
-				criteria.add(cb.equal(kural.get("urun").get("kategoriId") , ent.getUrun().getKategoriId()));	        	
+	        if (ent.getUrun()!=null && ent.getUrun().getKategori()!=null && ent.getUrun().getKategori().getId()!=null && ent.getUrun().getKategori().getId()!=0L) {
+				criteria.add(cb.equal(kural.get("urun").get("kategori").get("id") , ent.getUrun().getKategori().getId()));	        	
 	        }
 	        // arama kriterine depo da eklenmiş ise filitreler
-	        if (ent.getDepo()!=null && ent.getDepo().getId()!=null) {
+	        if (ent.getDepo()!=null && ent.getDepo().getId()!=null && ent.getDepo().getId()!=0L) {
 				criteria.add(cb.equal(kural.get("depo").get("id") , ent.getDepo().getId()));	        	
 	        }
 	        // arama kriterine deponun bulunduğu bölge görede eklenmiş ise filitreler
-	        if (ent.getDepo()!=null && ent.getDepo().getBolgeAdi()!=null) {
+	        if (ent.getDepo()!=null && ent.getDepo().getBolgeAdi()!=null && !"".equalsIgnoreCase(ent.getDepo().getBolgeAdi())) {
 				criteria.add(cb.like(kural.get("depo").get("bolgeAdi") , ent.getDepo().getBolgeAdi()));	        	
 	        }
 	        // arama kriterine deponun bulunduğu şehire görede eklenmiş ise filitreler
-	        if (ent.getDepo()!=null && ent.getDepo().getIlAdi()!=null) {
+	        if (ent.getDepo()!=null && ent.getDepo().getIlAdi()!=null && !"".equalsIgnoreCase(ent.getDepo().getIlAdi())) {
 				criteria.add(cb.like(kural.get("depo").get("ilAdi") , ent.getDepo().getIlAdi()));	        	
 	        }
 			cq.select(kural).where(criteria.toArray(new Predicate[]{}));
@@ -78,7 +78,7 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 		try {
 				ses = HibernateMySQLUtil.openSession();
 				
-				entlist =  ses.find(null, entlist);
+				entlist = HibernateMySQLUtil.loadAllData(DepoUrunEntity.class, ses);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

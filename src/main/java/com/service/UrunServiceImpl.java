@@ -1,5 +1,7 @@
 package com.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -8,7 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.entity.DepoUrunEntity;
 import com.entity.UrunEntity;
+import com.entity.UrunEntity;
 import com.hibernate.HibernateMySQLUtil;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 
 @Service
@@ -38,6 +46,28 @@ public class UrunServiceImpl implements UrunService {
         return urunlist;
 	}
 	
+	public List<UrunEntity> getKategoriById(Long id) {
+		List<UrunEntity>	result	=	new ArrayList<UrunEntity>();
+		Session	ses	=	null;
+		try {
+			ses = HibernateMySQLUtil.openSession();
+	        CriteriaBuilder cb = ses.getCriteriaBuilder();
+	        CriteriaQuery<UrunEntity> cq = cb.createQuery(UrunEntity.class);
+	        Root<UrunEntity> kural = cq.from(UrunEntity.class);
+	        List<Predicate> criteria = new ArrayList<Predicate>();
+			criteria.add(cb.equal(kural.get("kategori").get("id"), id));
+	        cq.select(kural).where(criteria.toArray(new Predicate[]{}));
+	        result = ses.createQuery(cq).getResultList();
+		} catch (Exception e) {
+			HibernateMySQLUtil.rollBack(ses);
+			result.get(0).getErrorMessages().add(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			HibernateMySQLUtil.close(ses);
+		}
+        return result;
+	}
+	
 	@Override 
 	public List<UrunEntity> getAll() {
 		Session	ses 		=	null;
@@ -45,7 +75,7 @@ public class UrunServiceImpl implements UrunService {
 		try {
 				ses = HibernateMySQLUtil.openSession();
 				
-				urunlist =  ses.find(null, urunlist);
+				urunlist = HibernateMySQLUtil.loadAllData(UrunEntity.class, ses);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,8 +92,10 @@ public class UrunServiceImpl implements UrunService {
 		try {
 			ses = HibernateMySQLUtil.openSession();
 			
-			ses.beginTransaction();			
-
+			ses.beginTransaction();
+			// 1/3		
+			ent.setMinAdet(ent.getAdet().divide(new BigDecimal(3),0,BigDecimal.ROUND_DOWN));
+			
 			ses.persist(ent);
 			ses.evict(ent);
 			
@@ -91,11 +123,12 @@ public class UrunServiceImpl implements UrunService {
 					ses.beginTransaction();
 					
 					urundb.setAdi(urun.getAdi());
-					urundb.setKategoriId(urun.getKategoriId());
+					urundb.setKategori(urun.getKategori());
 					urundb.setAdet(urun.getAdet());
-					urundb.setMinAdet(urun.getAdet());
+					// 1/3		
+					urundb.setMinAdet(urun.getAdet().divide(new BigDecimal(3),0,BigDecimal.ROUND_DOWN));
 
-					ses.merge(urundb);
+					ses.update(urundb);
 					ses.evict(urundb);
 					
 					ses.getTransaction().commit();

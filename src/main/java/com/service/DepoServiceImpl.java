@@ -20,7 +20,7 @@ public class DepoServiceImpl implements DepoService {
 		try {
 				ses = HibernateMySQLUtil.openSession();
 				
-				entlist =  ses.find(null, entlist);
+				entlist = HibernateMySQLUtil.loadAllData(DepoEntity.class, ses);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

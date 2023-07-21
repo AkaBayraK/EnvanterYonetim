@@ -34,7 +34,7 @@ public class EnvanterHstryEntity extends BaseEntity {
     private Long urunId;
 
     @Column(name = "DEPO_ID", nullable = false)
-    private String depoId;
+    private Long depoId;
     
     /* Eğer giriş tarihi dolu ise envantere ürün giri olduğu belirtir*/
     @Column(name = "GIRIS_TRH", nullable = false)

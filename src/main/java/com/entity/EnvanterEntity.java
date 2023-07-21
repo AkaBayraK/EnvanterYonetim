@@ -4,11 +4,16 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
@@ -22,7 +27,7 @@ import lombok.Data;
 @Entity
 @Table(name = "ENVANTER_TBL", schema = "envanterDB" )
 @NamedQueries({
-@NamedQuery(name="EnvanterEntity.findEnvanterUrunAll", query="SELECT x FROM EnvanterEntity x WHERE x.urunId=?1"),
+@NamedQuery(name="EnvanterEntity.findEnvanterUrunAll", query="SELECT x FROM EnvanterEntity x WHERE x.urun.id=?1"),
 })
 public class EnvanterEntity  extends BaseEntity {
 	
@@ -34,18 +39,23 @@ public class EnvanterEntity  extends BaseEntity {
 	@Column(name = "ID", nullable = false, columnDefinition = "NUMERIC(16,0)")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-	
-    @Column(name = "URUN_ID", nullable = false)
-    private Long urunId;
-
-    @Column(name = "DEPO_ID", nullable = false)
-    private String depoId;
+    
+	@ManyToOne(targetEntity=DepoEntity.class,fetch=FetchType.EAGER)
+	@JoinColumn(name="DEPO_ID",referencedColumnName="ID", nullable = false)
+	private DepoEntity depo;
+    
+	@ManyToOne(targetEntity=UrunEntity.class,fetch=FetchType.EAGER)
+	@JoinColumn(name="URUN_ID",referencedColumnName="ID", nullable = false)
+	private UrunEntity urun;
+  
     
     /* Eğer giriş tarihi dolu ise envantere ürün giri olduğu belirtir*/
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "GIRIS_TRH", nullable = false)
     private Date girisTrh;
 
     /* Eğer çıkış tarihi dolu ise o üründen ve depodan ürün çıkışı olduğu belirlenir.*/
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "CIKIS_TRH", nullable = false)
     private Date cikisTrh;
     
@@ -59,6 +69,8 @@ public class EnvanterEntity  extends BaseEntity {
 	}
 	
     public EnvanterEntity() {
+    	this.setUrun(new UrunEntity());
+    	this.setDepo(new DepoEntity());
 	}
     
 	public EnvanterHstryEntity createAutomaticHistory(){
@@ -66,8 +78,8 @@ public class EnvanterEntity  extends BaseEntity {
 		 
 		 result.setEnvanterId(this.getId());
 		 
-		 result.setUrunId(this.getUrunId());
-		 result.setDepoId(this.getDepoId());
+		 result.setUrunId(this.getUrun().getId());
+		 result.setDepoId(this.getDepo().getId());
 		 result.setGirisTrh(this.getGirisTrh());
 		 result.setCikisTrh(this.getCikisTrh());
 		 result.setAdet(this.getAdet());
@@ -93,21 +105,21 @@ public class EnvanterEntity  extends BaseEntity {
 			return false;
 		EnvanterEntity other = (EnvanterEntity) obj;
 		return Objects.equals(adet, other.adet) && Objects.equals(cikisTrh, other.cikisTrh)
-				&& Objects.equals(depoId, other.depoId) && Objects.equals(girisTrh, other.girisTrh)
-				&& Objects.equals(id, other.id) && Objects.equals(urunId, other.urunId);
+				&& Objects.equals(depo, other.depo) && Objects.equals(girisTrh, other.girisTrh)
+				&& Objects.equals(id, other.id) && Objects.equals(urun, other.urun);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(adet, cikisTrh, depoId, girisTrh, id, urunId);
+		result = prime * result + Objects.hash(adet, cikisTrh, depo, girisTrh, id, urun);
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "EnvanterEntity [id=" + id + ", urunId=" + urunId + ", depoId=" + depoId + ", girisTrh=" + girisTrh
+		return "EnvanterEntity [id=" + id + ", depo=" + depo + ", urun=" + urun + ", girisTrh=" + girisTrh
 				+ ", cikisTrh=" + cikisTrh + ", adet=" + adet + "]";
 	}
 

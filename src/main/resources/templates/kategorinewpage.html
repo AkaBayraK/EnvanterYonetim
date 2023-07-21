@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Kategori Ekle</title>
+<link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1>Kategori Kaydet</h1>
+ 
+        <form action="#" th:action="@{/api/kategori/saveKategori}" th:object="${kategori}" method="post">
+            
+            <input type="text" th:field="*{adi}" placeholder="Adı" class="form-control mb-4 col-4"> 
+            <button type="submit" class="btn btn-info col-2">Kaydet</button>
+        </form>
+ 
+        <hr>
+        
+        <a th:href="@{/api/kategori/kategorilistesi}"> Kategori Listesi </a>
+    </div>
+</body>
+</html>
