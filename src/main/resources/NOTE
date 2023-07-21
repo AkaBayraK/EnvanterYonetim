@@ -84,5 +84,9 @@ http://localhost:8080/api/depo/depolistesi
 http://localhost:8080/api/depoUrun/depoUrunlistesi
 http://localhost:8080/api/envanter/envanterlistesi
 
+Bir ürünün aratıpı hangi depolarda olduğunu getiren rest api
+
+localhost:8080/api/urun/depolar/1
+
 
 
