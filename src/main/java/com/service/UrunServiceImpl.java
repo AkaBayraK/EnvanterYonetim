@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.entity.DepoUrunEntity;
 import com.entity.UrunEntity;
-import com.entity.UrunEntity;
 import com.hibernate.HibernateMySQLUtil;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -117,7 +116,7 @@ public class UrunServiceImpl implements UrunService {
 		try {
 			ses = HibernateMySQLUtil.openSession();
 			if (urun!=null && urun.getId()!=null) {
-				urundb =  (UrunEntity)ses.get(UrunEntity.class, urun.getId());
+				urundb = getById(urun.getId());
 				// eğer db de var ise update etsin yok ise etmesin hata versin.
 				if (urundb!=null && urun.getId()!=null) {
 					ses.beginTransaction();
@@ -128,7 +127,7 @@ public class UrunServiceImpl implements UrunService {
 					// 1/3		
 					urundb.setMinAdet(urun.getAdet().divide(new BigDecimal(3),0,BigDecimal.ROUND_DOWN));
 
-					ses.update(urundb);
+					ses.merge(urundb);
 					ses.evict(urundb);
 					
 					ses.getTransaction().commit();

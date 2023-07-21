@@ -112,7 +112,14 @@ public class EnvanterController {
     	EnvanterServiceImpl.delete(id);
     	ModelAndView modelAndView = new ModelAndView("envanterlistesi");
     	modelAndView.addObject("envanterlist", EnvanterServiceImpl.getAll());
-        return modelAndView;
+
+    	EnvanterEntity en = new EnvanterEntity();
+    	modelAndView.addObject("searchEnvanter", en);
+    	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
+    	modelAndView.addObject("listurun", UrunServiceImpl.getAll());
+    	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll());
+
+    	return modelAndView;
     }
 	
     @PostMapping("/saveEnvanter")
@@ -125,6 +132,13 @@ public class EnvanterController {
 		}
     	ModelAndView modelAndView = new ModelAndView("envanterlistesi");
     	modelAndView.addObject("envanterlist", EnvanterServiceImpl.getAll());
+    	
+    	EnvanterEntity en = new EnvanterEntity();
+    	modelAndView.addObject("searchEnvanter", en);
+    	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
+    	modelAndView.addObject("listurun", UrunServiceImpl.getAll());
+    	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll());
+
 		return modelAndView;
     }
     
@@ -138,6 +152,13 @@ public class EnvanterController {
 		}
     	ModelAndView modelAndView = new ModelAndView("envanterlistesi");
     	modelAndView.addObject("envanterlist", EnvanterServiceImpl.getAll());
+    	
+    	EnvanterEntity en = new EnvanterEntity();
+    	modelAndView.addObject("searchEnvanter", en);
+    	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
+    	modelAndView.addObject("listurun", UrunServiceImpl.getAll());
+    	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll());
+
 		return modelAndView;
     }
     
@@ -151,6 +172,13 @@ public class EnvanterController {
 		}
     	ModelAndView modelAndView = new ModelAndView("envanterlistesi");
     	modelAndView.addObject("envanterlist", EnvanterServiceImpl.getAll());
+    	
+    	EnvanterEntity en = new EnvanterEntity();
+    	modelAndView.addObject("searchEnvanter", en);
+    	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
+    	modelAndView.addObject("listurun", UrunServiceImpl.getAll());
+    	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll());
+
 		return modelAndView;
     }	
 

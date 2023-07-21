@@ -153,7 +153,7 @@ public class EnvanterServiceImpl implements EnvanterService {
 	    	ent.setWarningMessages(new ArrayList<String>());
 	    	
 			if (ent!=null && ent.getId()!=null) {
-				entdb =  (EnvanterEntity)ses.get(EnvanterEntity.class, ent.getId());
+				entdb =  getById(ent.getId());
 				// eğer db de var ise update etsin yok ise etmesin hata versin.
 				if (entdb!=null && ent.getId()!=null) {
 					/*

@@ -119,7 +119,7 @@ public class DepoUrunServiceImpl implements DepoUrunService {
 		try {
 			ses = HibernateMySQLUtil.openSession();
 			if (ent!=null && ent.getId()!=null) {
-				entdb =  (DepoUrunEntity)ses.get(DepoUrunEntity.class, ent.getId());
+				entdb =  getById(ent.getId());
 				// eğer db de var ise update etsin yok ise etmesin hata versin.
 				if (entdb!=null && ent.getId()!=null) {
 					ses.beginTransaction();

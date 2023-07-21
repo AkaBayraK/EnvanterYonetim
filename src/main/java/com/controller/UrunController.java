@@ -47,8 +47,8 @@ public class UrunController {
     	modelAndView.addObject("searchDepoUrun", en);
     	modelAndView.addObject("urunlist", UrunServiceImpl.getAll());
     	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
-    	modelAndView.addObject("listurun", UrunServiceImpl.getAll());
     	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll()); 
+    	modelAndView.addObject("listurun", UrunServiceImpl.getAll());
 		return modelAndView;
     }
     
@@ -114,6 +114,12 @@ public class UrunController {
     	UrunServiceImpl.delete(id);
     	ModelAndView modelAndView = new ModelAndView("urunlistesi");
     	modelAndView.addObject("urunlist", UrunServiceImpl.getAll());
+    	// filtre için
+    	DepoUrunEntity en = new DepoUrunEntity();
+    	modelAndView.addObject("searchDepoUrun", en);
+    	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
+    	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll()); 
+
         return modelAndView;
     }
 	
@@ -127,6 +133,12 @@ public class UrunController {
 		}
     	ModelAndView modelAndView = new ModelAndView("urunlistesi");
     	modelAndView.addObject("urunlist", UrunServiceImpl.getAll());
+    	//filtre için
+    	DepoUrunEntity en = new DepoUrunEntity();
+    	modelAndView.addObject("searchDepoUrun", en);
+    	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
+    	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll()); 
+
 		return modelAndView;
     }
     
@@ -140,6 +152,12 @@ public class UrunController {
 		}
     	ModelAndView modelAndView = new ModelAndView("urunlistesi");
     	modelAndView.addObject("urunlist", UrunServiceImpl.getAll());
+    	// filtre için
+    	DepoUrunEntity en = new DepoUrunEntity();
+    	modelAndView.addObject("searchDepoUrun", en);
+    	modelAndView.addObject("listdepo", DepoServiceImpl.getAll());
+    	modelAndView.addObject("kategorilist", KategoriServiceImpl.getAll()); 
+
 		return modelAndView;
     }
     
