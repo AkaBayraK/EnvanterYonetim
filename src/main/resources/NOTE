@@ -73,3 +73,16 @@ mysql> SELECT version();
 1 row in set (0.00 sec)
 
 - DBeaver yardımıylada tablolar oluşturulacak. (Create scripleri proje içerisine yerleştirilmiştir)
+
+
+
+thymeleaf de hazırlanan ekran linkleri
+
+http://localhost:8080/api/urun/urunlistesi
+http://localhost:8080/api/kategori/kategorilistesi
+http://localhost:8080/api/depo/depolistesi
+http://localhost:8080/api/depoUrun/depoUrunlistesi
+http://localhost:8080/api/envanter/envanterlistesi
+
+
+
