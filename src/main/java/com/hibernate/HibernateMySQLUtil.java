@@ -25,7 +25,7 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.entity.EnvanterEntity;
+import com.entity.InventoryEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -45,14 +45,14 @@ public class HibernateMySQLUtil {
 //			
 //			ses.beginTransaction();
 			
-			List<EnvanterEntity>	result = null;			
+			List<InventoryEntity>	result = null;			
 			BigDecimal tplKalanUrunAdeti = BigDecimal.ZERO;
 //			List<EnvanterEntity>	result = HibernateMySQLUtil.loadEntityListByNamedQuery(EnvanterEntity.class, EnvanterEntity.FIND_ENVANTER_URUN_ALL,new Long[] {1L});		
 			
 		
 	        CriteriaBuilder cb = ses.getCriteriaBuilder();
-	        CriteriaQuery<EnvanterEntity> cq = cb.createQuery(EnvanterEntity.class);
-	        Root<EnvanterEntity> kural = cq.from(EnvanterEntity.class);
+	        CriteriaQuery<InventoryEntity> cq = cb.createQuery(InventoryEntity.class);
+	        Root<InventoryEntity> kural = cq.from(InventoryEntity.class);
 	        List<Predicate> criteria = new ArrayList<Predicate>();
 			criteria.add(cb.equal(kural.get("urunId"), 1L));
 	        cq.select(kural).where(criteria.toArray(new Predicate[]{}));
@@ -62,12 +62,12 @@ public class HibernateMySQLUtil {
 			BigDecimal	girenUrunAdedi = BigDecimal.ZERO;
 			BigDecimal	cikanUrunAdedi = BigDecimal.ZERO;
 			try {
-				girenUrunAdedi = result.stream().filter(x->x.getGirisTrh()!=null).map(EnvanterEntity::getAdet).reduce((a,b)->a.add(b)).get();
+				girenUrunAdedi = result.stream().filter(x->x.getInputDate()!=null).map(InventoryEntity::getPiece).reduce((a,b)->a.add(b)).get();
 			} catch (Exception e) {
 				girenUrunAdedi = BigDecimal.ZERO;
 			}
 			try {
-				cikanUrunAdedi = result.stream().filter(x->x.getCikisTrh()!=null).map(EnvanterEntity::getAdet).reduce((a,b)->a.add(b)).get();
+				cikanUrunAdedi = result.stream().filter(x->x.getOutDate()!=null).map(InventoryEntity::getPiece).reduce((a,b)->a.add(b)).get();
 			} catch (Exception e) {
 				cikanUrunAdedi = BigDecimal.ZERO;
 			}

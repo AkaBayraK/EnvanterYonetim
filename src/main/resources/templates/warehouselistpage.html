@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Ürün</title>
+<link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+</head>
+<body>
+<div class="container my-2" align="center">
+ 
+<h3>Depo Listesi</h3>
+<a th:href="@{/api/auth/warehousenewpage}" class="btn btn-primary btn-sm mb-3" >Depo Ekle</a>
+<a th:href="@{/api/auth/dashboard}" class="btn btn-primary btn-sm mb-3"> Ana Menü </a>
+    <table style="width:99%" border="1" class = "table table-striped table-responsive-md">
+    <thead>
+  <tr>
+    <th>Id</th>
+    <th>Depo Adı</th>
+    <th>Adresi</th>
+    <th>Bölgesi</th>
+    <th>Şehri</th>
+    <th>Operasyon</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="e:${warehouselist}">
+        <td th:text="${e.id}"></td>
+        <td th:text="${e.name}"></td>
+        <td th:text="${e.address}"></td>
+        <td th:text="${e.regionName}"></td>
+        <td th:text="${e.cityName}"></td>
+        <td>
+			<a th:href="@{/api/auth/warehouseupdatepage/{id}(id=${e.id})}" class="btn btn-primary">Güncelle</a>
+            <a th:href="@{/api/auth/deleteWarehouse/{id}(id=${e.id})}" class="btn btn-danger">Sil</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</body>
+</html>

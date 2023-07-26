@@ -31,7 +31,6 @@ public abstract class BaseEntity implements Serializable, Cloneable{
     @Transient
     public static final String UPDATE = "UPDATE";
     
-    // data işlem kullanıcı zaman bilgileri  aslında bu alanlar zorunlu olması gerekiyor ama test
     @Column(name="GMT")
     private Date gmt;
 

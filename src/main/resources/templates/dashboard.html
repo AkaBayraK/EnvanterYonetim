@@ -1,0 +1,27 @@
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu" data-th-fragment="sidebar-menu">
+    <div class="menu_section">
+        <h3>Envanter Yönetimi</h3>
+        <ul class="nav side-menu">
+            <li><a><i class="fa fa-home"></i> Envanter İşlemleri <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li>
+                    	<a class="nav-link active" aria-current="page" th:href="@{/api/auth/inventorylistpage}">Envanter Listesi</a>
+                    </li>
+                    <li>
+						<a class="nav-link active" aria-current="page" th:href="@{/api/auth/productlistpage}">Ürün Listesi</a>
+                    </li>
+                    <li>
+						<a class="nav-link active" aria-current="page" th:href="@{/api/auth/categorylistpage}">Kategori Parametre Girişi</a>
+					</li>
+                    <li>
+						<a class="nav-link active" aria-current="page" th:href="@{/api/auth/warehouselistpage}">Depo Parametre Girişi</a>
+					</li>
+                    <li>
+						<a class="nav-link active" aria-current="page" th:href="@{/api/auth/warehouseproductlistpage}">Depo - Ürün Girişi</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</div>
