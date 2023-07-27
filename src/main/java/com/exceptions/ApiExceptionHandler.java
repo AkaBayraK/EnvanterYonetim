@@ -1,6 +1,8 @@
 package com.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -9,20 +11,24 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.service.ApiExceptionService;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Slf4j
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	@Autowired
+	ApiExceptionService apiExceptionService;
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<?> handleApplicationException(
-            final ApiException exception, final HttpServletRequest request
-    ) {
+    public ResponseEntity<?> handleApplicationException(final ApiException exception, final HttpServletRequest request) {
         var guid = UUID.randomUUID().toString();
         log.error(
         String.format("Error GUID=%s; error message: %s", guid, exception.getMessage()), 
@@ -36,15 +42,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 exception.getHttpStatus().name(),
                 request.getRequestURI(),
                 request.getMethod(),
-                LocalDateTime.now()
+                new Date()
         );
+        apiExceptionService.save(response);
         return new ResponseEntity<>(response, exception.getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleUnknownException(
-        final Exception exception, final HttpServletRequest request
-    ) {
+    public ResponseEntity<?> handleUnknownException(final Exception exception, final HttpServletRequest request) {
         var guid = UUID.randomUUID().toString();
         log.error(
             String.format("Error GUID=%s; error message: %s", guid, exception.getMessage()), 
@@ -58,8 +63,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR.name(),
                 request.getRequestURI(),
                 request.getMethod(),
-                LocalDateTime.now()
+                new Date()
         );
+        apiExceptionService.save(response);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

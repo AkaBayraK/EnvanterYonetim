@@ -1,6 +1,6 @@
 package com.exceptions;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import lombok.Data;
 
@@ -13,5 +13,5 @@ public class ApiErrorResponse {
     private final String statusName;
     private final String path;
     private final String method;
-    private final LocalDateTime timestamp;
+    private final Date timestamp;
 }
