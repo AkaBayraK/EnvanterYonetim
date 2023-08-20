@@ -1,5 +1,8 @@
 package com.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,31 +35,41 @@ public class InventoryController {
     }
 
 	@GetMapping
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(inventoryService.getAll());
+    public ResponseEntity<List<InventoryEntity>> getAll() {
+        //return ResponseEntity.ok(inventoryService.getAll());
+        List<InventoryEntity> searchInventory = inventoryService.getAll();
+        return new ResponseEntity<List<InventoryEntity>>(searchInventory, HttpStatus.OK);
     }
 	/**
 	 * ExceptionHandler kulanıldı
 	 * ApiException kullanildi. InventoryServerImp.java da search methodunun içerisinde kullanildi HATA yakalandığında response olarak ApiErrrorResponse dönüyor. hata yok ise InventoryEntity dönüyor.
 	 */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable final Long id) {
-        return ResponseEntity.ok(inventoryService.getById(id));
+    public ResponseEntity<InventoryEntity> getById(@PathVariable final Long id) {
+        //return ResponseEntity.ok(inventoryService.getById(id));
+    	InventoryEntity inventory = inventoryService.getById(id);
+        return new ResponseEntity<InventoryEntity>(inventory, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody InventoryEntity ent) {
-		return ResponseEntity.ok(inventoryService.save(ent));
+    public ResponseEntity<InventoryEntity> save(@RequestBody InventoryEntity ent) {
+    	//ResponseEntity.ok(inventoryService.save(ent));
+    	InventoryEntity savedInventory = inventoryService.save(ent);
+		return new ResponseEntity<InventoryEntity>(savedInventory, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody InventoryEntity ent) {
-		return ResponseEntity.ok(inventoryService.update(id, ent));
+    public ResponseEntity<InventoryEntity> update(@PathVariable Long id, @RequestBody InventoryEntity ent) {
+		//return ResponseEntity.ok(inventoryService.update(id, ent));
+    	InventoryEntity updatedInventory = inventoryService.update(id, ent);
+        return new ResponseEntity<InventoryEntity>(updatedInventory, HttpStatus.OK);
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-		return ResponseEntity.ok(inventoryService.delete(id));
+    public ResponseEntity<InventoryEntity> delete(@PathVariable Long id) {
+		//return ResponseEntity.ok(inventoryService.delete(id));
+    	InventoryEntity deleteInventory = inventoryService.delete(id);
+        return new ResponseEntity<InventoryEntity>(deleteInventory, HttpStatus.ACCEPTED);
     }
     
 	/**
@@ -64,13 +77,17 @@ public class InventoryController {
 	 * ApiException kullanildi. InventoryServerImp.java da search methodunun içerisinde kullanildi HATA yakalandığında response olarak ApiErrrorResponse dönüyor. hata yok ise InventoryEntity dönüyor.
 	 */
 	@GetMapping("/search")
-    public ResponseEntity<?> search(@RequestBody InventoryEntity ent) {
-        return ResponseEntity.ok(inventoryService.search(ent));
+    public ResponseEntity<List<InventoryEntity>> search(@RequestBody InventoryEntity ent) {
+        //return ResponseEntity.ok(inventoryService.search(ent));
+       List<InventoryEntity> searchInventory = inventoryService.search(ent);
+       return new ResponseEntity<List<InventoryEntity>>(searchInventory, HttpStatus.OK);
     }
 	
     @PostMapping("/extraction")
-    public InventoryEntity extraction(@RequestBody InventoryEntity ent) {
-		return inventoryService.extraction(ent);
+    public ResponseEntity<InventoryEntity> extraction(@RequestBody InventoryEntity ent) {
+		//return inventoryService.extraction(ent);
+    	InventoryEntity savedInventory = inventoryService.extraction(ent);
+		return new ResponseEntity<InventoryEntity>(savedInventory, HttpStatus.CREATED);
     }
     
 }

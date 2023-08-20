@@ -1,0 +1,16 @@
+application:
+  title: DataTounch-Karmasis
+  version: 2.0.0
+
+local:date:language:upper: TR
+local:date:language:lower: tr
+
+# spring-profiles-active -> x-security
+# spring-profiles-active -> y-security
+# spring-profiles-active -> z-security
+
+spring:
+  profiles:
+    active: x-security
+  jackson:
+    time-zone: Europe/Istanbul
