@@ -1,0 +1,50 @@
+
+Eğer iki farklı Security konfigürasyonunu koşullara göre sırayla çalıştırmak veya devre dışı bırakmak istiyorsanız, 
+bunu Spring Profiles mekanizması aracılığıyla gerçekleştirebilirsiniz. Spring Profiles, farklı ortamlar veya koşullar için yapılandırmaları ayrı ayrı tanımlamanıza olanak tanır.
+
+Örnek olarak, iki farklı Security konfigürasyonunu farklı profillerde yönetmek istediğinizi düşünelim. 
+Profil belirlemek için application.yml veya application.properties dosyanızda aşağıdaki gibi ayarları yapabilirsiniz:
+
+yml
+
+spring:
+  profiles:
+    active: security1 # Varsayılan olarak security1 profili aktif olsun
+    
+Daha sonra, iki farklı Security konfigürasyonu için iki farklı sınıf oluşturabilirsiniz:
+
+İlk Security Konfigürasyon Sınıfı (SecurityConfig1.java):
+
+java
+Copy code
+@Configuration
+@Profile("security1")
+@EnableWebSecurity
+public class SecurityConfig1 extends WebSecurityConfigurerAdapter {
+    // ...
+}
+İkinci Security Konfigürasyon Sınıfı (SecurityConfig2.java):
+java
+Copy code
+@Configuration
+@Profile("security2")
+@EnableWebSecurity
+public class SecurityConfig2 extends WebSecurityConfigurerAdapter {
+    // ...
+}
+Bu durumda, security1 profili aktif olduğunda SecurityConfig1 sınıfı çalışacak, security2 profili aktif olduğunda ise SecurityConfig2 sınıfı çalışacaktır.
+
+Profili değiştirmek için uygulamanızı başlattığınızda, spring.profiles.active özelliğini komut satırından veya çevre değişkenlerinden ayarlayabilirsiniz. Örneğin:
+
+Komut satırından belirlemek:
+
+
+java -jar myapp.jar --spring.profiles.active=security2
+
+Çevre değişkeni olarak belirlemek:
+
+
+export SPRING_PROFILES_ACTIVE=security2
+java -jar myapp.jar
+
+Bu şekilde, iki farklı Security konfigürasyonunu farklı profillerde yöneterek, hangi konfigürasyonun çalışacağını kontrol edebilirsiniz.
